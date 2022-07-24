@@ -37,10 +37,18 @@ export default function createFormHook<P>(Input: InputComponent<P>) {
     );
 
     const HandledInput = useCallback(
-      (props: HandledInputProps<T, P>) => (
-        <Input {...props} name={props.name as string} onChange={handleChange} />
-      ),
-      [handleChange]
+      (vals: typeof values, onChange: typeof handleChange) =>
+        function HI(props: HandledInputProps<T, P>) {
+          return (
+            <Input
+              {...props}
+              name={props.name as string}
+              value={vals[props.name]}
+              onChange={onChange}
+            />
+          );
+        },
+      []
     );
 
     return {
@@ -53,7 +61,7 @@ export default function createFormHook<P>(Input: InputComponent<P>) {
         },
         [values]
       ),
-      Input: HandledInput,
+      Input: HandledInput(values, handleChange),
     };
   };
 

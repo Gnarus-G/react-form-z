@@ -12,7 +12,7 @@ const FormDemo: React.FC<{ onSubmit: (values: object) => void }> = (props) => {
         first: z.string(),
         last: z.string(),
       }),
-    { first: "", last: "" }
+    { first: "Jane", last: "Doe" }
   );
 
   return (
@@ -25,6 +25,15 @@ const FormDemo: React.FC<{ onSubmit: (values: object) => void }> = (props) => {
 };
 
 describe("happy path", () => {
+  it("displays initial input", () => {
+    const screen = render(<FormDemo onSubmit={vi.fn()} />);
+    const firstNameInput = screen.getByTestId("first");
+    const lastNameInput = screen.getByTestId("last");
+
+    expect(firstNameInput).toHaveDisplayValue("Jane");
+    expect(lastNameInput).toHaveDisplayValue("Doe");
+  });
+
   it("saves input in state, and gives it to the handler on submit", () => {
     const mockSubmitHandler = vi.fn();
     const screen = render(<FormDemo onSubmit={mockSubmitHandler} />);
