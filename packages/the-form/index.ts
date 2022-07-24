@@ -2,21 +2,25 @@ import {
   ChangeEvent,
   createElement,
   FormEvent,
+  ReactNode,
   useCallback,
   useMemo,
   useState,
 } from "react";
 import { z, ZodTypeAny } from "zod";
 
-type InputProps = JSX.IntrinsicElements["input"];
+interface RequiredInputProps
+  extends Pick<JSX.IntrinsicElements["input"], "onChange" | "value" | "name"> {
+  error?: ReactNode;
+}
 
-type InputComponent = React.ComponentType<InputProps>;
+type InputComponent<P> = React.ComponentType<P & RequiredInputProps>;
 
-type HandledInputProps<T> = T extends ZodTypeAny
-  ? { name: keyof z.infer<T> } & InputProps
-  : InputProps;
+type HandledInputProps<T, P> = T extends ZodTypeAny
+  ? { name: keyof z.infer<T> } & P
+  : P;
 
-export default function createFormHook<I extends InputComponent>(Input: I) {
+export default function createFormHook<P>(Input: InputComponent<P>) {
   const useForm = <T extends ZodTypeAny>(
     schemaDef: (zod: typeof z) => T,
     initial: z.infer<T>
@@ -46,9 +50,10 @@ export default function createFormHook<I extends InputComponent>(Input: I) {
         ),
       },
       useCallback(
-        (props: HandledInputProps<T>) =>
+        (props: HandledInputProps<T, P>) =>
           createElement(Input, {
             ...props,
+            name: props.name as string,
             onChange: handleChange,
           }),
         [handleChange]
