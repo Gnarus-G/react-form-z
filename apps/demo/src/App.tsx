@@ -26,7 +26,7 @@ function App() {
 export default App;
 
 function FormDemo() {
-  const [form, Input] = useForm(
+  const form = useForm(
     (z) =>
       z.object({
         first: z.string(),
@@ -39,10 +39,10 @@ function FormDemo() {
     <form
       onSubmit={form.onSubmit((values) => console.log("Submitting", values))}
     >
-      <Input name="first" />
+      <form.Input name="first" />
       <br />
       <br />
-      <Input name="last" />
+      <form.Input name="last" />
       <pre>{JSON.stringify(form.values, null, 2)}</pre>
       <button>Submit</button>
     </form>
@@ -52,7 +52,7 @@ function FormDemo() {
 const useFormMantine = createFormHook(TextInput);
 
 function FormMantineDemo() {
-  const [form, Input] = useFormMantine(
+  const form = useFormMantine(
     (z) =>
       z.object({
         first: z.string(),
@@ -65,10 +65,10 @@ function FormMantineDemo() {
     <form
       onSubmit={form.onSubmit((values) => console.log("Submitting", values))}
     >
-      <Input label="First Name" name="first" />
+      <form.Input label="First Name" name="first" />
       <br />
       <br />
-      <Input label="Last Name" name="last" />
+      <form.Input label="Last Name" name="last" />
       <pre>{JSON.stringify(form.values, null, 2)}</pre>
       <button>Submit</button>
     </form>
@@ -78,7 +78,7 @@ function FormMantineDemo() {
 const useFormMui = createFormHook(TextField);
 
 function FormMuiDemo() {
-  const [form, Input] = useFormMui(
+  const form = useFormMui(
     (z) =>
       z.object({
         first: z.string(),
@@ -91,10 +91,20 @@ function FormMuiDemo() {
     <form
       onSubmit={form.onSubmit((values) => console.log("Submitting", values))}
     >
-      <Input label="First Name" name="first" variant="filled" color="primary" />
+      <form.Input
+        label="First Name"
+        name="first"
+        variant="filled"
+        color="primary"
+      />
       <br />
       <br />
-      <Input label="Last Name" name="last" variant="filled" color="primary" />
+      <form.Input
+        label="Last Name"
+        name="last"
+        variant="filled"
+        color="primary"
+      />
       <pre>{JSON.stringify(form.values, null, 2)}</pre>
       <button>Submit</button>
     </form>

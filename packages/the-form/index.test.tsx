@@ -6,7 +6,7 @@ import createFormHook from ".";
 const useForm = createFormHook((props) => <input {...props} />);
 
 const FormDemo: React.FC<{ onSubmit: (values: object) => void }> = (props) => {
-  const [form, Input] = useForm(
+  const form = useForm(
     (z) =>
       z.object({
         first: z.string(),
@@ -17,8 +17,8 @@ const FormDemo: React.FC<{ onSubmit: (values: object) => void }> = (props) => {
 
   return (
     <form onSubmit={form.onSubmit(props.onSubmit)}>
-      <Input name="first" data-testid="first" />
-      <Input name="last" data-testid="last" />
+      <form.Input name="first" data-testid="first" />
+      <form.Input name="last" data-testid="last" />
       <button>Submit</button>
     </form>
   );

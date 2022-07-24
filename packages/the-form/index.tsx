@@ -1,6 +1,5 @@
 import {
   ChangeEvent,
-  createElement,
   FormEvent,
   ReactNode,
   useCallback,
@@ -16,7 +15,7 @@ interface RequiredInputProps
 
 type InputComponent<P> = React.ComponentType<P & RequiredInputProps>;
 
-type HandledInputProps<T, P> = T extends ZodTypeAny
+type HandledInputProps<T, P extends RequiredInputProps> = T extends ZodTypeAny
   ? { name: keyof z.infer<T> } & P
   : P;
 
@@ -37,28 +36,25 @@ export default function createFormHook<P>(Input: InputComponent<P>) {
       []
     );
 
-    return [
-      {
-        values,
-        setValues,
-        onSubmit: useCallback(
-          (handler: (values: typeof initial) => void) => (event: FormEvent) => {
-            event.preventDefault();
-            handler(values);
-          },
-          [values]
-        ),
-      },
-      useCallback(
-        (props: HandledInputProps<T, P>) =>
-          createElement(Input, {
-            ...props,
-            name: props.name as string,
-            onChange: handleChange,
-          }),
-        [handleChange]
+    const HandledInput = useCallback(
+      (props: HandledInputProps<T, P>) => (
+        <Input {...props} name={props.name as string} onChange={handleChange} />
       ),
-    ] as const;
+      [handleChange]
+    );
+
+    return {
+      values,
+      setValues,
+      onSubmit: useCallback(
+        (handler: (values: typeof initial) => void) => (event: FormEvent) => {
+          event.preventDefault();
+          handler(values);
+        },
+        [values]
+      ),
+      Input: HandledInput,
+    };
   };
 
   return useForm;
