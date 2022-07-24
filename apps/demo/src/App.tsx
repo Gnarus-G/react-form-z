@@ -1,40 +1,12 @@
-import { useState } from "react";
-import create from "the-form";
-import reactLogo from "./assets/react.svg";
+import createFormHook from "the-form";
 import "./App.css";
 
-const [Provider, useForm] = create();
+const useForm = createFormHook((props) => <input {...props} />);
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <div>
-        <Provider value="input">
-          <FormDemo />
-        </Provider>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <FormDemo />
     </div>
   );
 }
@@ -48,10 +20,7 @@ function FormDemo() {
         first: z.string(),
         last: z.string(),
       }),
-    {
-      first: "",
-      last: "",
-    }
+    { first: "", last: "" }
   );
 
   return (

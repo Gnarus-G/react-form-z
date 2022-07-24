@@ -1,10 +1,8 @@
 import {
   ChangeEvent,
-  createContext,
   createElement,
   FormEvent,
   useCallback,
-  useContext,
   useMemo,
   useState,
 } from "react";
@@ -12,21 +10,18 @@ import { z, ZodTypeAny } from "zod";
 
 type InputProps = JSX.IntrinsicElements["input"];
 
-type Field = React.ComponentType<InputProps> | "input";
+type InputComponent = React.ComponentType<InputProps>;
 
 type HandledInputProps<T> = T extends ZodTypeAny
   ? { name: keyof z.infer<T> } & InputProps
   : InputProps;
 
-export default function create<C extends Field>() {
-  const context = createContext<C>(null);
-
+export default function createFormHook<I extends InputComponent>(Input: I) {
   const useForm = <T extends ZodTypeAny>(
     schemaDef: (zod: typeof z) => T,
     initial: z.infer<T>
   ) => {
     const _ = useMemo(() => schemaDef(z), [schemaDef]);
-    const FieldComponent = useContext(context);
     const [values, setValues] = useState(initial);
 
     const handleChange = useCallback(
@@ -52,14 +47,14 @@ export default function create<C extends Field>() {
       },
       useCallback(
         (props: HandledInputProps<T>) =>
-          createElement(FieldComponent, {
+          createElement(Input, {
             ...props,
             onChange: handleChange,
           }),
-        [FieldComponent, handleChange]
+        [handleChange]
       ),
     ] as const;
   };
 
-  return [context.Provider, useForm] as const;
+  return useForm;
 }
