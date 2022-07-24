@@ -1,0 +1,28 @@
+{
+  "name": "the-form",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "form",
+    "zod",
+    "validation",
+    "react"
+  ],
+  "author": "Gnarus-G",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "react-dom": ">=17.0.0",
+    "zod": "^3.17.10"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.15",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "zod": "^3.17.10"
+  }
+}
