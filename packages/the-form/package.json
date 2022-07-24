@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "lint": "eslint *.ts"
+    "dev": "tsc --watch",
+    "lint": "eslint *.ts",
+    "test": "vitest",
+    "test:ui": "vitest --ui"
   },
   "keywords": [
     "form",
@@ -21,11 +23,22 @@
     "zod": "^3.17.10"
   },
   "devDependencies": {
-    "@types/react": "^18.0.15",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^12.1.5",
+    "@testing-library/react-hooks": "^8.0.0",
+    "@types/react": "^17.0.45",
+    "@types/react-dom": "^17.0.17",
+    "@types/testing-library__jest-dom": "^5.14.5",
+    "@vitejs/plugin-react": "^2.0.0",
+    "@vitest/ui": "latest",
     "eslint": "^8.20.0",
     "eslint-config-custom": "workspace:*",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "jsdom": "latest",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "tsconfig": "workspace:*",
+    "vite": "^3.0.0",
+    "vitest": "latest",
     "zod": "^3.17.10"
   }
 }

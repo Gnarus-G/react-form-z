@@ -8,4 +8,7 @@ module.exports = {
     "plugin:react/jsx-runtime",
     "prettier",
   ],
+  rules: {
+    "react/prop-types": 0,
+  },
 };
