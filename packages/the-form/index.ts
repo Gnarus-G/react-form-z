@@ -25,7 +25,8 @@ export default function create<C extends Field>() {
     schemaDef: (zod: typeof z) => T,
     initial: z.infer<T>
   ) => {
-    const _ = useMemo(() => schemaDef(z), []);
+    const _ = useMemo(() => schemaDef(z), [schemaDef]);
+    const FieldComponent = useContext(context);
     const [values, setValues] = useState(initial);
 
     const handleChange = useCallback(
@@ -51,11 +52,11 @@ export default function create<C extends Field>() {
       },
       useCallback(
         (props: HandledInputProps<T>) =>
-          createElement(useContext(context), {
+          createElement(FieldComponent, {
             ...props,
             onChange: handleChange,
           }),
-        []
+        [FieldComponent, handleChange]
       ),
     ] as const;
   };
