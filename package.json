@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm -r run dev",
+    "dev": "pnpm --parallel run dev",
     "lint": "pnpm -r run lint"
   },
   "keywords": [],
