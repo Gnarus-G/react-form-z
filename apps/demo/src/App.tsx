@@ -1,7 +1,9 @@
 import { useState } from "react";
+import create from "the-form";
 import reactLogo from "./assets/react.svg";
 import "./App.css";
-import { Provider, useForm } from "./setup";
+
+const [Provider, useForm] = create();
 
 function App() {
   const [count, setCount] = useState(0);
