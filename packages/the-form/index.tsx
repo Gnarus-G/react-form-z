@@ -27,7 +27,6 @@ interface Form<T extends BasicForm> {
   values: T;
   setValues: React.Dispatch<React.SetStateAction<T>>;
   onSubmit: (handler: OnSubmitHanlder<T>) => (event: React.FormEvent) => void;
-  bind: (name: keyof T) => RequiredInputProps;
 }
 
 export function useForm<T extends BasicForm>(
@@ -36,19 +35,6 @@ export function useForm<T extends BasicForm>(
 ): Form<T> {
   const _ = useMemo(() => schemaDef(z), [schemaDef]);
   const [values, setValues] = useState(initial);
-
-  const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setValues((prev) => {
-        const next = {
-          ...prev,
-          [event.target.name]: event.target.value,
-        };
-        return next;
-      });
-    },
-    []
-  );
 
   return {
     values,
@@ -59,16 +45,6 @@ export function useForm<T extends BasicForm>(
         handler(values);
       },
       [values]
-    ),
-    bind: useCallback(
-      (name) => {
-        return {
-          name: name as string,
-          value: values[name],
-          onChange: handleChange,
-        };
-      },
-      [values, handleChange]
     ),
   };
 }
