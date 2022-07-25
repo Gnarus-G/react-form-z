@@ -1,69 +1,62 @@
-import {
-  ChangeEvent,
-  FormEvent,
-  ReactNode,
-  useCallback,
-  useMemo,
-  useState,
-} from "react";
-import { z, ZodTypeAny } from "zod";
+import { useCallback, useMemo, useState } from "react";
+import { z, ZodType } from "zod";
 
-interface RequiredInputProps
-  extends Pick<JSX.IntrinsicElements["input"], "onChange" | "value" | "name"> {
-  error?: ReactNode;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type BasicForm = Record<string, any>;
+
+type RequiredInputProps = Pick<
+  JSX.IntrinsicElements["input"],
+  "onChange" | "value" | "name"
+>;
+
+type OnSubmitHanlder<T> = (values: T) => void;
+
+interface Form<T extends BasicForm> {
+  values: T;
+  setValues: React.Dispatch<React.SetStateAction<T>>;
+  onSubmit: (handler: OnSubmitHanlder<T>) => (event: React.FormEvent) => void;
+  bind: (name: keyof T) => RequiredInputProps;
 }
 
-type InputComponent<P> = React.ComponentType<P & RequiredInputProps>;
+export function useForm<T extends BasicForm>(
+  schemaDef: (zod: typeof z) => ZodType<T>,
+  initial: T
+): Form<T> {
+  const _ = useMemo(() => schemaDef(z), [schemaDef]);
+  const [values, setValues] = useState(initial);
 
-type HandledInputProps<T, P extends RequiredInputProps> = T extends ZodTypeAny
-  ? { name: keyof z.infer<T> } & P
-  : P;
-
-export default function createFormHook<P>(Input: InputComponent<P>) {
-  const useForm = <T extends ZodTypeAny>(
-    schemaDef: (zod: typeof z) => T,
-    initial: z.infer<T>
-  ) => {
-    const _ = useMemo(() => schemaDef(z), [schemaDef]);
-    const [values, setValues] = useState(initial);
-
-    const handleChange = useCallback(
-      (event: ChangeEvent<HTMLInputElement>) =>
-        setValues((prev) => ({
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setValues((prev) => {
+        const next = {
           ...prev,
           [event.target.name]: event.target.value,
-        })),
-      []
-    );
+        };
+        return next;
+      });
+    },
+    []
+  );
 
-    const HandledInput = useCallback(
-      (vals: typeof values, onChange: typeof handleChange) =>
-        function HI(props: HandledInputProps<T, P>) {
-          return (
-            <Input
-              {...props}
-              name={props.name as string}
-              value={vals[props.name]}
-              onChange={onChange}
-            />
-          );
-        },
-      []
-    );
-
-    return {
-      values,
-      setValues,
-      onSubmit: useCallback(
-        (handler: (values: typeof initial) => void) => (event: FormEvent) => {
-          event.preventDefault();
-          handler(values);
-        },
-        [values]
-      ),
-      Input: HandledInput(values, handleChange),
-    };
+  return {
+    values,
+    setValues,
+    onSubmit: useCallback(
+      (handler) => (event) => {
+        event.preventDefault();
+        handler(values);
+      },
+      [values]
+    ),
+    bind: useCallback(
+      (name) => {
+        return {
+          name: name as string,
+          value: values[name],
+          onChange: handleChange,
+        };
+      },
+      [values, handleChange]
+    ),
   };
-
-  return useForm;
 }

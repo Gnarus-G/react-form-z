@@ -1,9 +1,7 @@
-import createFormHook from "the-form";
+import { useForm } from "the-form";
 import { createTheme, TextField, ThemeProvider } from "@mui/material";
 import { MantineProvider, TextInput } from "@mantine/core";
 import "./App.css";
-
-const useForm = createFormHook((props) => <input {...props} />);
 
 function App() {
   return (
@@ -39,20 +37,18 @@ function FormDemo() {
     <form
       onSubmit={form.onSubmit((values) => console.log("Submitting", values))}
     >
-      <form.Input name="first" />
+      <input {...form.bind("first")} />
       <br />
       <br />
-      <form.Input name="last" />
+      <input {...form.bind("last")} />
       <pre>{JSON.stringify(form.values, null, 2)}</pre>
       <button>Submit</button>
     </form>
   );
 }
-
-const useFormMantine = createFormHook(TextInput);
 
 function FormMantineDemo() {
-  const form = useFormMantine(
+  const form = useForm(
     (z) =>
       z.object({
         first: z.string(),
@@ -65,20 +61,18 @@ function FormMantineDemo() {
     <form
       onSubmit={form.onSubmit((values) => console.log("Submitting", values))}
     >
-      <form.Input label="First Name" name="first" />
+      <TextInput {...form.bind("first")} />
       <br />
       <br />
-      <form.Input label="Last Name" name="last" />
+      <TextInput {...form.bind("last")} />
       <pre>{JSON.stringify(form.values, null, 2)}</pre>
       <button>Submit</button>
     </form>
   );
 }
 
-const useFormMui = createFormHook(TextField);
-
 function FormMuiDemo() {
-  const form = useFormMui(
+  const form = useForm(
     (z) =>
       z.object({
         first: z.string(),
@@ -91,17 +85,17 @@ function FormMuiDemo() {
     <form
       onSubmit={form.onSubmit((values) => console.log("Submitting", values))}
     >
-      <form.Input
+      <TextField
+        {...form.bind("first")}
         label="First Name"
-        name="first"
         variant="filled"
         color="primary"
       />
       <br />
       <br />
-      <form.Input
-        label="Last Name"
-        name="last"
+      <TextField
+        {...form.bind("last")}
+        label="First Name"
         variant="filled"
         color="primary"
       />

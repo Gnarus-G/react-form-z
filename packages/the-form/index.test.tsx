@@ -1,9 +1,7 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render } from "./test/utils";
 import { describe, expect, it, vi } from "vitest";
-import createFormHook from ".";
-
-const useForm = createFormHook((props) => <input {...props} />);
+import { useForm } from ".";
 
 const FormDemo: React.FC<{ onSubmit: (values: object) => void }> = (props) => {
   const form = useForm(
@@ -12,33 +10,31 @@ const FormDemo: React.FC<{ onSubmit: (values: object) => void }> = (props) => {
         first: z.string(),
         last: z.string(),
       }),
-    { first: "Jane", last: "Doe" }
+    { first: "", last: "" }
   );
 
   return (
     <form onSubmit={form.onSubmit(props.onSubmit)}>
-      <form.Input name="first" data-testid="first" />
-      <form.Input name="last" data-testid="last" />
+      <input {...form.bind("first")} />
+      <input {...form.bind("last")} />
       <button>Submit</button>
     </form>
   );
 };
 
 describe("happy path", () => {
-  it("displays initial input", () => {
+  it("displays initial input (blank)", () => {
     const screen = render(<FormDemo onSubmit={vi.fn()} />);
-    const firstNameInput = screen.getByTestId("first");
-    const lastNameInput = screen.getByTestId("last");
+    const [firstNameInput, lastNameInput] = screen.getAllByRole("textbox");
 
-    expect(firstNameInput).toHaveDisplayValue("Jane");
-    expect(lastNameInput).toHaveDisplayValue("Doe");
+    expect(firstNameInput).toHaveDisplayValue("");
+    expect(lastNameInput).toHaveDisplayValue("");
   });
 
   it("saves input in state, and gives it to the handler on submit", () => {
     const mockSubmitHandler = vi.fn();
     const screen = render(<FormDemo onSubmit={mockSubmitHandler} />);
-    const firstNameInput = screen.getByTestId("first");
-    const lastNameInput = screen.getByTestId("last");
+    const [firstNameInput, lastNameInput] = screen.getAllByRole("textbox");
 
     fireEvent.change(firstNameInput, {
       target: { value: "John" },
