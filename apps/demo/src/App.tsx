@@ -1,4 +1,4 @@
-import { useForm } from "the-form";
+import { createFormInput, useForm } from "the-form";
 import { createTheme, TextField, ThemeProvider } from "@mui/material";
 import { MantineProvider, TextInput } from "@mantine/core";
 import "./App.css";
@@ -23,6 +23,8 @@ function App() {
 
 export default App;
 
+const Input = createFormInput((props) => <input {...props} />);
+
 function FormDemo() {
   const form = useForm(
     (z) =>
@@ -37,10 +39,10 @@ function FormDemo() {
     <form
       onSubmit={form.onSubmit((values) => console.log("Submitting", values))}
     >
-      <input {...form.bind("first")} />
+      <Input for={[form, "first"]} />
       <br />
       <br />
-      <input {...form.bind("last")} />
+      <Input for={[form, "last"]} />
       <pre>{JSON.stringify(form.values, null, 2)}</pre>
       <button
         className="btn clear"
@@ -53,6 +55,8 @@ function FormDemo() {
     </form>
   );
 }
+
+const MantineInput = createFormInput(TextInput);
 
 function FormMantineDemo() {
   const form = useForm(
@@ -68,10 +72,10 @@ function FormMantineDemo() {
     <form
       onSubmit={form.onSubmit((values) => console.log("Submitting", values))}
     >
-      <TextInput {...form.bind("first")} label="First Name" />
+      <MantineInput for={[form, "first"]} label="First Name" />
       <br />
       <br />
-      <TextInput {...form.bind("last")} label="Last Name" />
+      <MantineInput for={[form, "last"]} label="Last Name" />
       <pre>{JSON.stringify(form.values, null, 2)}</pre>
       <button
         className="btn clear"
@@ -85,6 +89,8 @@ function FormMantineDemo() {
     </form>
   );
 }
+
+const Field = createFormInput(TextField);
 
 function FormMuiDemo() {
   const form = useForm(
@@ -100,16 +106,16 @@ function FormMuiDemo() {
     <form
       onSubmit={form.onSubmit((values) => console.log("Submitting", values))}
     >
-      <TextField
-        {...form.bind("first")}
+      <Field
+        for={[form, "first"]}
         label="First Name"
         variant="filled"
         color="primary"
       />
       <br />
       <br />
-      <TextField
-        {...form.bind("last")}
+      <Field
+        for={[form, "last"]}
         label="Last Name"
         variant="filled"
         color="primary"
