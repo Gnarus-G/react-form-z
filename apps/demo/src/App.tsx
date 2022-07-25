@@ -10,13 +10,13 @@ function App() {
         <FormDemo />
       </div>
       <br />
-      <ThemeProvider theme={createTheme({ palette: { mode: "dark" } })}>
-        <FormMuiDemo />
-      </ThemeProvider>
-      <br />
       <MantineProvider theme={{ colorScheme: "dark" }}>
         <FormMantineDemo />
       </MantineProvider>
+      <br />
+      <ThemeProvider theme={createTheme({ palette: { mode: "dark" } })}>
+        <FormMuiDemo />
+      </ThemeProvider>
     </>
   );
 }
@@ -42,6 +42,13 @@ function FormDemo() {
       <br />
       <input {...form.bind("last")} />
       <pre>{JSON.stringify(form.values, null, 2)}</pre>
+      <button
+        className="btn clear"
+        type="button"
+        onClick={() => form.setValues({ first: "", last: "" })}
+      >
+        Clear
+      </button>
       <button>Submit</button>
     </form>
   );
@@ -61,11 +68,19 @@ function FormMantineDemo() {
     <form
       onSubmit={form.onSubmit((values) => console.log("Submitting", values))}
     >
-      <TextInput {...form.bind("first")} />
+      <TextInput {...form.bind("first")} label="First Name" />
       <br />
       <br />
-      <TextInput {...form.bind("last")} />
+      <TextInput {...form.bind("last")} label="Last Name" />
       <pre>{JSON.stringify(form.values, null, 2)}</pre>
+      <button
+        className="btn clear"
+        type="button"
+        onClick={() => form.setValues({ first: "", last: "" })}
+      >
+        Clear
+      </button>
+
       <button>Submit</button>
     </form>
   );
@@ -95,11 +110,18 @@ function FormMuiDemo() {
       <br />
       <TextField
         {...form.bind("last")}
-        label="First Name"
+        label="Last Name"
         variant="filled"
         color="primary"
       />
       <pre>{JSON.stringify(form.values, null, 2)}</pre>
+      <button
+        className="btn clear"
+        type="button"
+        onClick={() => form.setValues({ first: "", last: "" })}
+      >
+        Clear
+      </button>
       <button>Submit</button>
     </form>
   );

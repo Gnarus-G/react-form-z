@@ -32,6 +32,11 @@
   }
 }
 
+.btn.clear {
+  margin-right: 10px;
+  background-color: #2e2e2e;
+}
+
 .card {
   padding: 2em;
 }
