@@ -49,7 +49,10 @@ export function useForm<T extends BasicForm>(
   };
 }
 
-type FormBinding<FormData> = [Form<FormData>, keyof FormData];
+type FormBinding<FormData> = [
+  Pick<Form<FormData>, "values" | "setValues">,
+  keyof FormData
+];
 
 type PropsWithFormBinding<Props, FormData> = Props & {
   for: FormBinding<FormData>;
