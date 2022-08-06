@@ -5,9 +5,9 @@ Premise 2: Simplest ergonomics
 
 ## Features
 
-- [x] Dependency Inject Custom Components  
-- [x] Manage values  
-- [ ] Manage errors  
+- [x] Dependency Inject Custom Components
+- [x] Manage values
+- [x] Manage errors
 - [ ] Decide if this is the whole list of features, or more is needed.
 
 ## Install
@@ -20,10 +20,13 @@ Premise 2: Simplest ergonomics
 
 Clone this repo.  
 Install the dependencies...
+
 ```sh
 pnpm install
 ```
+
 Run the demo...
+
 ```sh
 pnpm run dev
 ```

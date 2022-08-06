@@ -1,5 +1,5 @@
-import { useCallback, useMemo, useState } from "react";
-import { z, ZodType } from "zod";
+import { FormEvent, useCallback, useMemo, useState } from "react";
+import { z, ZodError, ZodType } from "zod";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type BasicForm = Record<string, any>;
@@ -13,44 +13,70 @@ type RequiredInputProps = {
   name?: string;
   value?: InputValue;
   onChange?: OnInputChange;
+  error?: React.ReactNode;
 };
 
 type InferredInputProps<Props> = {
-  name?: string;
   value?: Props extends HasValue<infer V> ? V : unknown;
-  onChange?: JSX.IntrinsicElements["input"]["onChange"];
 } & Props;
 
-type OnSubmitHanlder<T> = (values: T) => void;
+type OnSubmitHanlder<T> = (values: T, event: FormEvent) => void;
 
-interface Form<T extends BasicForm> {
+type Errors<T> = Partial<Record<keyof T, React.ReactNode>>;
+
+interface Form<T extends BasicForm, E = Errors<T>> {
   values: T;
+  errors: E;
   setValues: React.Dispatch<React.SetStateAction<T>>;
+  setErrors: React.Dispatch<React.SetStateAction<E>>;
   onSubmit: (handler: OnSubmitHanlder<T>) => (event: React.FormEvent) => void;
 }
 
-export function useForm<T extends BasicForm>(
-  schemaDef: (zod: typeof z) => ZodType<T>,
-  initial: T
-): Form<T> {
-  const _ = useMemo(() => schemaDef(z), [schemaDef]);
+type FormArgs<T extends BasicForm> = {
+  schema: (zod: typeof z) => ZodType<T>;
+  initial: T;
+  initialErrors?: Errors<T>;
+};
+
+export function useForm<T extends BasicForm>({
+  schema: schemaDef,
+  initial,
+  initialErrors = {},
+}: FormArgs<T>): Form<T> {
+  const schema = useMemo(() => schemaDef(z), [schemaDef]);
   const [values, setValues] = useState(initial);
+  const [errors, setErrors] = useState(initialErrors);
+
+  const validate = useCallback(
+    async (onSuccess: (data: T) => void) => {
+      return schema
+        .parseAsync(values)
+        .then(onSuccess)
+        .catch((e: ZodError<T>) => {
+          const errors = e.flatten().fieldErrors;
+          setErrors(errors as Errors<T>);
+        });
+    },
+    [schema, values]
+  );
 
   return {
     values,
+    errors,
     setValues,
+    setErrors,
     onSubmit: useCallback(
-      (handler) => (event) => {
+      (handler) => async (event) => {
         event.preventDefault();
-        handler(values);
+        await validate((data) => handler(data, event));
       },
-      [values]
+      [validate]
     ),
   };
 }
 
 type FormBinding<FormData> = [
-  Pick<Form<FormData>, "values" | "setValues">,
+  Pick<Form<FormData>, "values" | "setValues" | "errors">,
   keyof FormData
 ];
 
@@ -66,7 +92,7 @@ export function createFormInput<
     props: PropsWithFormBinding<Props, FormData>
   ) {
     const {
-      for: [{ values, setValues }, name],
+      for: [{ values, setValues, errors }, name],
       ...rest
     } = props;
 
@@ -74,6 +100,7 @@ export function createFormInput<
       <Input
         name={name}
         value={values[name]}
+        error={errors[name]}
         onChange={useCallback(
           (event: React.ChangeEvent<HTMLInputElement>) => {
             setValues((prev) => ({
