@@ -1,5 +1,10 @@
 import { createFormInput, useForm } from "the-form";
-import { createTheme, TextField, ThemeProvider } from "@mui/material";
+import {
+  createTheme,
+  TextField,
+  TextFieldProps,
+  ThemeProvider,
+} from "@mui/material";
 import { MantineProvider, TextInput } from "@mantine/core";
 import "./App.css";
 
@@ -23,17 +28,22 @@ function App() {
 
 export default App;
 
-const Input = createFormInput((props) => <input {...props} />);
+const Input = createFormInput((props) => (
+  <>
+    <input {...props} />
+    <p>{props.error}</p>
+  </>
+));
 
 function FormDemo() {
-  const form = useForm(
-    (z) =>
+  const form = useForm({
+    schema: (z) =>
       z.object({
-        first: z.string(),
-        last: z.string(),
+        first: z.string().min(8),
+        last: z.string().min(8),
       }),
-    { first: "", last: "" }
-  );
+    initial: { first: "", last: "" },
+  });
 
   return (
     <form
@@ -59,14 +69,14 @@ function FormDemo() {
 const MantineInput = createFormInput(TextInput);
 
 function FormMantineDemo() {
-  const form = useForm(
-    (z) =>
+  const form = useForm({
+    schema: (z) =>
       z.object({
-        first: z.string(),
-        last: z.string(),
+        first: z.string().min(8),
+        last: z.string().min(8),
       }),
-    { first: "", last: "" }
-  );
+    initial: { first: "", last: "" },
+  });
 
   return (
     <form
@@ -90,17 +100,19 @@ function FormMantineDemo() {
   );
 }
 
-const Field = createFormInput(TextField);
+const Field = createFormInput((props: TextFieldProps) => (
+  <TextField {...props} helperText={props.error} />
+));
 
 function FormMuiDemo() {
-  const form = useForm(
-    (z) =>
+  const form = useForm({
+    schema: (z) =>
       z.object({
-        first: z.string(),
-        last: z.string(),
+        first: z.string().min(8).max(5),
+        last: z.string().min(8),
       }),
-    { first: "", last: "" }
-  );
+    initial: { first: "", last: "" },
+  });
 
   return (
     <form
