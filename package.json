@@ -6,6 +6,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm --parallel run dev",
+    "test": "pnpm -r run test",
+    "build": "pnpm -r run build",
     "lint": "pnpm -r run lint"
   },
   "keywords": [],

@@ -19,6 +19,7 @@ importers:
       '@emotion/react': ^11.9.3
       '@emotion/styled': ^11.9.3
       '@mantine/core': ^4.2.12
+      '@mantine/hooks': ^4.2.12
       '@mui/material': ^5.9.1
       '@types/react': ^18.0.15
       '@types/react-dom': ^18.0.6
@@ -33,6 +34,7 @@ importers:
       '@emotion/react': 11.9.3_szkdlbnthht4v3jvm76fn7u6na
       '@emotion/styled': 11.9.3_y2x62d5bbinncmisoeyv36jqse
       '@mantine/core': 4.2.12_essemuo2ilucam5kriquhcncne
+      '@mantine/hooks': 4.2.12_react@18.2.0
       '@mui/material': 5.9.1_bl6qrq6463ovzmqn4cmwv7vydq
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
