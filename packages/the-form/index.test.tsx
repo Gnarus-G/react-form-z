@@ -1,54 +1,102 @@
-import "@testing-library/jest-dom";
-import userEvent from "@testing-library/user-event";
-import { render } from "./test/utils";
-import { describe, expect, it, vi } from "vitest";
-import { useForm } from ".";
+import { render, act, cleanup } from "@testing-library/react";
+import { renderHook } from "@testing-library/react-hooks";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { createFormInput, useForm } from ".";
 
-const FormDemo: React.FC<{ onSubmit: (values: object) => void }> = (props) => {
-  const form = useForm(
-    (z) =>
-      z.object({
-        first: z.string(),
-        last: z.string(),
-      }),
-    { first: "", last: "" }
-  );
+afterEach(() => {
+  cleanup();
+});
 
-  return (
-    <form onSubmit={form.onSubmit(props.onSubmit)}>
-      <input {...form.bind("first")} />
-      <input {...form.bind("last")} />
-      <button>Submit</button>
-    </form>
-  );
-};
+const Input = createFormInput((props) => (
+  <>
+    <input {...props} />
+    <p>{props.error}</p>
+  </>
+));
 
-describe.skip("happy path", () => {
+describe("happy path", () => {
   it("displays initial input (blank)", () => {
-    const screen = render(<FormDemo onSubmit={vi.fn()} />);
+    const { result } = renderHook(() =>
+      useForm({
+        schema: (z) =>
+          z.object({
+            first: z.string(),
+            last: z.string(),
+          }),
+        initial: { first: "Jane", last: "Doe" },
+      })
+    );
+
+    const form = result.current;
+
+    const screen = render(
+      <>
+        <Input for={[form, "first"]} />
+        <Input for={[form, "last"]} />
+      </>
+    );
     const [firstNameInput, lastNameInput] = screen.getAllByRole("textbox");
 
-    expect(firstNameInput).toHaveDisplayValue("");
-    expect(lastNameInput).toHaveDisplayValue("");
+    expect(firstNameInput).toHaveDisplayValue("Jane");
+    expect(lastNameInput).toHaveDisplayValue("Doe");
   });
 
   it("saves input in state, and gives it to the handler on submit", async () => {
+    const { result } = renderHook(() =>
+      useForm({
+        schema: (z) =>
+          z.object({
+            first: z.string(),
+            last: z.string(),
+          }),
+        initial: { first: "", last: "" },
+      })
+    );
+
     const mockSubmitHandler = vi.fn();
-    const user = userEvent;
-    const screen = render(<FormDemo onSubmit={mockSubmitHandler} />);
-    const [firstNameInput, lastNameInput] = screen.getAllByRole("textbox");
+    act(() => {
+      result.current.setValues({
+        first: "John",
+        last: "McAlister",
+      });
+    });
 
-    await user.type(firstNameInput, "John");
-    await user.type(lastNameInput, "McAlister");
-
-    screen.getByRole("button").click();
-
-    expect(firstNameInput).toHaveDisplayValue("John");
-    expect(lastNameInput).toHaveDisplayValue("McAlister");
-
-    expect(mockSubmitHandler).toHaveBeenCalledWith({
+    expect(result.current.values).toEqual({
       first: "John",
       last: "McAlister",
+    });
+
+    const submit = result.current.onSubmit(async (v) => mockSubmitHandler(v));
+    await submit();
+
+    expect(mockSubmitHandler).toBeCalledWith({
+      first: "John",
+      last: "McAlister",
+    });
+  });
+
+  it("allows updating state", () => {
+    const { result } = renderHook(() =>
+      useForm({
+        schema: (z) =>
+          z.object({
+            first: z.string(),
+            last: z.string(),
+          }),
+        initial: { first: "Bill", last: "Bob" },
+      })
+    );
+
+    act(() => {
+      result.current.setValues({
+        first: "",
+        last: "",
+      });
+    });
+
+    expect(result.current.values).toEqual({
+      first: "",
+      last: "",
     });
   });
 });

@@ -20,7 +20,7 @@ type InferredInputProps<Props> = {
   value?: Props extends HasValue<infer V> ? V : unknown;
 } & Props;
 
-type OnSubmitHanlder<T> = (values: T, event: FormEvent) => void;
+type OnSubmitHanlder<T> = (values: T, event?: FormEvent) => void;
 
 type Errors<T> = Partial<Record<keyof T, React.ReactNode>>;
 
@@ -29,7 +29,9 @@ interface Form<T extends BasicForm, E = Errors<T>> {
   errors: E;
   setValues: React.Dispatch<React.SetStateAction<T>>;
   setErrors: React.Dispatch<React.SetStateAction<E>>;
-  onSubmit: (handler: OnSubmitHanlder<T>) => (event: React.FormEvent) => void;
+  onSubmit: (
+    handler: OnSubmitHanlder<T>
+  ) => (event?: React.FormEvent) => Promise<void>;
 }
 
 type FormArgs<T extends BasicForm> = {
@@ -67,7 +69,7 @@ export function useForm<T extends BasicForm>({
     setErrors,
     onSubmit: useCallback(
       (handler) => async (event) => {
-        event.preventDefault();
+        event?.preventDefault();
         await validate((data) => handler(data, event));
       },
       [validate]
