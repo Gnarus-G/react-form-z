@@ -99,4 +99,26 @@ describe("happy path", () => {
       last: "",
     });
   });
+
+  it("validates on submit and sets errors", async () => {
+    const mockSubmitHandler = vi.fn();
+    const { result } = renderHook(() =>
+      useForm({
+        schema: (z) =>
+          z.object({
+            first: z.string().min(8),
+            last: z.string().min(8),
+          }),
+        initial: { first: "", last: "" },
+      })
+    );
+
+    const submit = result.current.onSubmit(async (v) => mockSubmitHandler(v));
+    await submit();
+
+    expect(mockSubmitHandler).not.toBeCalled();
+
+    expect(result.current.errors.first).toBeDefined();
+    expect(result.current.errors.last).toBeDefined();
+  });
 });
