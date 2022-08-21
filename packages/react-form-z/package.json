@@ -1,13 +1,22 @@
 {
   "name": "react-form-z",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "main": "dist/cjs/index.js",
+  "types": "dist/cjs/index.d.ts",
+  "type": "commonjs",
+  "exports": {
+    "require": "./dist/cjs/index.js",
+    "import": "./dist/es6/index.js"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "tsc --watch",
-    "build": "tsc",
+    "build": "rm -rf dist && pnpm build:cjs && pnpm build:es6",
+    "build:cjs": "tsc",
+    "build:es6": "tsc -p tsconfig.module.json",
     "lint": "eslint *.ts",
     "test": "vitest run",
     "test:watch": "vitest",

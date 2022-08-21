@@ -1,8 +1,17 @@
 {
   "extends": "tsconfig/react-library.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist/cjs",
+    "module": "CommonJS"
   },
   "include": ["."],
-  "exclude": ["dist", "build", "node_modules", "*.test.ts", "*.test.tsx", "vite.config.*"]
+  "exclude": [
+    "dist",
+    "build",
+    "node_modules",
+    "test",
+    "*.test.ts",
+    "*.test.tsx",
+    "vite.config.*"
+  ]
 }

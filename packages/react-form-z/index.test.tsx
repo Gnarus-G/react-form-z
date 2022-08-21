@@ -61,7 +61,7 @@ describe("happy path", () => {
       });
     });
 
-    expect(result.current.values).toEqual({
+    expect(result.current.data).toEqual({
       first: "John",
       last: "McAlister",
     });
@@ -94,7 +94,7 @@ describe("happy path", () => {
       });
     });
 
-    expect(result.current.values).toEqual({
+    expect(result.current.data).toEqual({
       first: "",
       last: "",
     });

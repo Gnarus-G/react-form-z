@@ -46,18 +46,16 @@ function FormDemo() {
   });
 
   return (
-    <form
-      onSubmit={form.onSubmit((values) => console.log("Submitting", values))}
-    >
+    <form onSubmit={form.onSubmit((data) => console.log("Submitting", data))}>
       <Input for={[form, "first"]} />
       <br />
       <br />
       <Input for={[form, "last"]} />
-      <pre>{JSON.stringify(form.values, null, 2)}</pre>
+      <pre>{JSON.stringify(form.data, null, 2)}</pre>
       <button
         className="btn clear"
         type="button"
-        onClick={() => form.setValues({ first: "", last: "" })}
+        onClick={() => form.setData({ first: "", last: "" })}
       >
         Clear
       </button>
@@ -79,18 +77,16 @@ function FormMantineDemo() {
   });
 
   return (
-    <form
-      onSubmit={form.onSubmit((values) => console.log("Submitting", values))}
-    >
+    <form onSubmit={form.onSubmit((data) => console.log("Submitting", data))}>
       <MantineInput for={[form, "first"]} label="First Name" />
       <br />
       <br />
       <MantineInput for={[form, "last"]} label="Last Name" />
-      <pre>{JSON.stringify(form.values, null, 2)}</pre>
+      <pre>{JSON.stringify(form.data, null, 2)}</pre>
       <button
         className="btn clear"
         type="button"
-        onClick={() => form.setValues({ first: "", last: "" })}
+        onClick={() => form.setData({ first: "", last: "" })}
       >
         Clear
       </button>
@@ -115,9 +111,7 @@ function FormMuiDemo() {
   });
 
   return (
-    <form
-      onSubmit={form.onSubmit((values) => console.log("Submitting", values))}
-    >
+    <form onSubmit={form.onSubmit((data) => console.log("Submitting", data))}>
       <Field
         for={[form, "first"]}
         label="First Name"
@@ -132,11 +126,11 @@ function FormMuiDemo() {
         variant="filled"
         color="primary"
       />
-      <pre>{JSON.stringify(form.values, null, 2)}</pre>
+      <pre>{JSON.stringify(form.data, null, 2)}</pre>
       <button
         className="btn clear"
         type="button"
-        onClick={() => form.setValues({ first: "", last: "" })}
+        onClick={() => form.setData({ first: "", last: "" })}
       >
         Clear
       </button>

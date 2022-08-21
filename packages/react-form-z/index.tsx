@@ -25,9 +25,9 @@ type OnSubmitHanlder<T> = (values: T, event?: FormEvent) => void;
 type Errors<T> = Partial<Record<keyof T, React.ReactNode>>;
 
 interface Form<T extends BasicForm, E = Errors<T>> {
-  values: T;
+  data: T;
   errors: E;
-  setValues: React.Dispatch<React.SetStateAction<T>>;
+  setData: React.Dispatch<React.SetStateAction<T>>;
   setErrors: React.Dispatch<React.SetStateAction<E>>;
   onSubmit: (
     handler: OnSubmitHanlder<T>
@@ -46,7 +46,7 @@ export function useForm<T extends BasicForm>({
   initialErrors = {},
 }: FormArgs<T>): Form<T> {
   const schema = useMemo(() => schemaDef(z), [schemaDef]);
-  const [values, setValues] = useState(initial);
+  const [values, setData] = useState(initial);
   const [errors, setErrors] = useState(initialErrors);
 
   const validate = useCallback(
@@ -63,9 +63,9 @@ export function useForm<T extends BasicForm>({
   );
 
   return {
-    values,
+    data: values,
     errors,
-    setValues,
+    setData,
     setErrors,
     onSubmit: useCallback(
       (handler) => async (event) => {
@@ -78,7 +78,7 @@ export function useForm<T extends BasicForm>({
 }
 
 type FormBinding<FormData> = [
-  Pick<Form<FormData>, "values" | "setValues" | "errors">,
+  Pick<Form<FormData>, "data" | "setData" | "errors">,
   keyof FormData
 ];
 
@@ -94,23 +94,23 @@ export function createFormInput<
     props: PropsWithFormBinding<Props, FormData>
   ) {
     const {
-      for: [{ values, setValues, errors }, name],
+      for: [{ data, setData, errors }, name],
       ...rest
     } = props;
 
     return (
       <Input
         name={name}
-        value={values[name]}
+        value={data[name]}
         error={errors[name]}
         onChange={useCallback(
           (event: React.ChangeEvent<HTMLInputElement>) => {
-            setValues((prev) => ({
+            setData((prev) => ({
               ...prev,
               [name]: event.target.value,
             }));
           },
-          [name, setValues]
+          [name, setData]
         )}
         {...(rest as unknown as Props)}
       />
