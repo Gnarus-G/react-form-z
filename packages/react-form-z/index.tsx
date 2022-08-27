@@ -77,12 +77,12 @@ export function useForm<T extends BasicForm>({
   };
 }
 
-type FormBinding<FormData> = [
+type FormBinding<FormData extends BasicForm> = [
   Pick<Form<FormData>, "data" | "setData" | "errors">,
   keyof FormData
 ];
 
-type PropsWithFormBinding<Props, FormData> = Props & {
+type PropsWithFormBinding<Props, FormData extends BasicForm> = Props & {
   for: FormBinding<FormData>;
 };
 
@@ -90,7 +90,7 @@ export function createFormInput<
   P extends RequiredInputProps,
   Props = InferredInputProps<P>
 >(Input: React.ComponentType<Props>) {
-  return function FormInput<FormData>(
+  return function FormInput<FormData extends BasicForm>(
     props: PropsWithFormBinding<Props, FormData>
   ) {
     const {
