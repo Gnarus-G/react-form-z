@@ -55,7 +55,7 @@ describe("happy path", () => {
 
     const mockSubmitHandler = vi.fn();
     act(() => {
-      result.current.setValues({
+      result.current.setData({
         first: "John",
         last: "McAlister",
       });
@@ -88,7 +88,7 @@ describe("happy path", () => {
     );
 
     act(() => {
-      result.current.setValues({
+      result.current.setData({
         first: "",
         last: "",
       });
