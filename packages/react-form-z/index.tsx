@@ -51,6 +51,7 @@ export function useForm<T extends BasicForm>({
 
   const validate = useCallback(
     async (onSuccess: (data: T) => void) => {
+      setErrors({});
       return schema
         .parseAsync(values)
         .then(onSuccess)
