@@ -2,21 +2,18 @@
   "name": "react-form-z",
   "version": "0.0.5",
   "description": "",
-  "main": "dist/cjs/index.js",
-  "types": "dist/cjs/index.d.ts",
-  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
-    "require": "./dist/cjs/index.js",
-    "import": "./dist/es6/index.js"
+    "require": "./dist/index.js",
+    "import": "./dist/esm/index.js"
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "dev": "tsc --watch",
-    "build": "rm -rf dist && pnpm build:cjs && pnpm build:es6",
-    "build:cjs": "tsc",
-    "build:es6": "tsc -p tsconfig.module.json && cp package.module.json dist/es6/package.json",
+    "dev": "tsup index.tsx --watch --onSuccess",
+    "build": "tsup index.tsx --clean --format esm,cjs --legacy-output",
     "lint": "eslint *.ts",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -51,6 +48,7 @@
     "tsconfig": "workspace:*",
     "vite": "^3.0.9",
     "vitest": "^0.22.1",
-    "zod": "^3.18.0"
+    "zod": "^3.18.0",
+    "tsup": "^6.4.0"
   }
 }
